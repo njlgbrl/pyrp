@@ -1,4 +1,5 @@
 from configparser import ConfigParser
+import psutil
 import time
 
 from pypresence import Presence
@@ -9,7 +10,7 @@ config.read(config_file)
 
 client_id = config['Client']['ClientID']
 
-if config['States']['State'] == '<Required>':
+if config['States']['State'] != '<Required>':
     state = config['States']['State']
 else:
     state = 'Left unchanged'
@@ -40,14 +41,14 @@ else:
     large_tooltip = None
 
 if config['Images']['SmallTooltip'] != '<Optional>':
-    small_tooltip = config['Images']['LargeTooltip']
+    small_tooltip = config['Images']['SmallTooltip']
 else:
     small_tooltip = None
 
 rpc = Presence(client_id)
 rpc.connect()
 rpc.update(state=state, details=details, start=start, large_image=large_image,
-           small_image=small_image, large_text=large_tooltip, small_text=large_tooltip)
+           small_image=small_image, large_text=large_tooltip, small_text=small_tooltip)
 
 while True:
     time.sleep(15)
