@@ -1,5 +1,4 @@
 from configparser import ConfigParser
-import psutil
 import time
 
 from pypresence import Presence
@@ -46,9 +45,30 @@ else:
     small_tooltip = None
 
 rpc = Presence(client_id)
-rpc.connect()
-rpc.update(state=state, details=details, start=start, large_image=large_image,
-           small_image=small_image, large_text=large_tooltip, small_text=small_tooltip)
 
-while True:
-    time.sleep(15)
+print(f'Application ID: {client_id}')
+print(f'State: {state}')
+print(f'Details: {details if details else "None (Optional)"}')
+print(f'Elapsed Time: {"On" if start else "Off"}')
+print(f'Large Image: {large_image}{" with tooltip/text" if large_tooltip else ""}')
+print(f'Small Image: {small_image}{" with tooltip/text" if small_tooltip else ""}\n')
+
+print('Connecting presence...')
+
+try:
+    rpc.connect()
+    rpc.update(state=state, details=details, start=start, large_image=large_image,
+           small_image=small_image, large_text=large_tooltip, small_text=small_tooltip)
+    print('Presence connected!\n')
+except:
+    print('Presence failed to connect...')
+    print('Exiting program...')
+
+try:
+    while True:
+        time.sleep(15)
+except KeyboardInterrupt:
+    rpc.close()
+    print('Disconnecting presence...')
+    print('Exiting program...')
+    time.sleep(3)
